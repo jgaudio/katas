@@ -1,0 +1,21 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+repositories {
+    mavenCentral()
+}
+
+// java configuration
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+dependencies {
+    implementation 'com.google.guava:guava:29.0-jre'
+    testCompile(group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: version_junit)
+    testCompile(group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: version_junit)
+    testCompile(group: 'org.hamcrest', name: 'hamcrest', version: version_hamcrest)
+}
+
+wrapper {
+    gradleVersion = gradleWrapperVersion
+}
