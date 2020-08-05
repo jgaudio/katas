@@ -13,7 +13,7 @@ public class CalculationContext {
     private static final int UNIT_BASE_PRICE = 8;
     // Table over which to apply discounts
     private final int[] books;
-    // How many different volumes are there?
+    // How many absolute different volumes are there?
     private int differentBooksCount;
     // How many copies in total?
     private int totalBooksCount;
