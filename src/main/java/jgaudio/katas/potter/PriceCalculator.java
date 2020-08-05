@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-public class DiscountCalculator {
+public class PriceCalculator {
 
     // All discounts
     private final Set<Discount> discounts;
@@ -14,11 +14,11 @@ public class DiscountCalculator {
     // calculation state
     private BestPrice bestPrice;
 
-    public DiscountCalculator(final Set<Discount> allDiscounts) {
+    public PriceCalculator(final Set<Discount> allDiscounts) {
         this.discounts = Collections.unmodifiableSet(allDiscounts);
     }
 
-    public BestPrice calculateBestDiscount(final Map<String, Integer> books) {
+    public BestPrice calculateBestPrice(final Map<String, Integer> books) {
 
         // Build stateful calculation context
         // In a parallel alternative, this could be stateless and apply/revert discounts

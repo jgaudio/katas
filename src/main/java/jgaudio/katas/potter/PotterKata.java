@@ -27,8 +27,8 @@ public class PotterKata {
     }
 
     public BestPrice getBestDiscount() {
-        final DiscountCalculator discountCalculator = new DiscountCalculator(discounts);
-        return discountCalculator.calculateBestDiscount(books);
+        final PriceCalculator priceCalculator = new PriceCalculator(discounts);
+        return priceCalculator.calculateBestPrice(books);
     }
 
 }
