@@ -1,7 +1,7 @@
 // (C) king.com Ltd 2020
 package jgaudio.katas.potter;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,10 +14,10 @@ Missing calculating actual price, but knowing best discount it's really straight
  */
 class PotterKataTest {
 
-    private static final Discount DISCOUNT_2 = new Discount(5, 2);
-    private static final Discount DISCOUNT_3 = new Discount(10, 3);
-    private static final Discount DISCOUNT_4 = new Discount(20, 4);
-    private static final Discount DISCOUNT_5 = new Discount(25, 5);
+    private static final Discount DISCOUNT_2 = new Discount(0.95f, 2);
+    private static final Discount DISCOUNT_3 = new Discount(0.9f, 3);
+    private static final Discount DISCOUNT_4 = new Discount(0.8f, 4);
+    private static final Discount DISCOUNT_5 = new Discount(0.75f, 5);
 
     private PotterKata potterKata;
 
@@ -31,7 +31,7 @@ class PotterKataTest {
     }
 
     @Test
-    void testChooseBestDiscount() {
+    void testEdgeCase1() {
 
         potterKata.addBook("Book A", 2);
         potterKata.addBook("Book B", 2);
@@ -39,10 +39,26 @@ class PotterKataTest {
         potterKata.addBook("Book D", 1);
         potterKata.addBook("Book E", 1);
 
-        final BestDiscount bestDiscount = potterKata.getBestDiscount();
+        final BestPrice bestPrice = potterKata.getBestDiscount();
 
-        final BestDiscount expectedDiscount = new BestDiscount(Lists.newArrayList(DISCOUNT_4, DISCOUNT_4));
+        final BestPrice expectedPrice = new BestPrice(Sets.newHashSet(DISCOUNT_4, DISCOUNT_4),4 * 8 * 0.8f * 2);
 
-        assertThat(bestDiscount, is(expectedDiscount));
+        assertThat(bestPrice, is(expectedPrice));
+    }
+
+    @Test
+    void testEdgeCase2() {
+
+        potterKata.addBook("Book A", 5);
+        potterKata.addBook("Book B", 5);
+        potterKata.addBook("Book C", 4);
+        potterKata.addBook("Book D", 5);
+        potterKata.addBook("Book E", 4);
+
+        final BestPrice bestPrice = potterKata.getBestDiscount();
+
+        final BestPrice expectedPrice = new BestPrice(Sets.newHashSet(DISCOUNT_5, DISCOUNT_5, DISCOUNT_5, DISCOUNT_4, DISCOUNT_4), 3 * (8 * 5 * 0.75f) + 2 * (8 * 4 * 0.8f));
+
+        assertThat(bestPrice, is(expectedPrice));
     }
 }

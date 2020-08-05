@@ -2,32 +2,32 @@
 
 package jgaudio.katas.potter;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
-public final class BestDiscount {
+public final class BestPrice {
 
-    private final List<Discount> discounts;
-    private final double totalDiscount;
+    private final Set<Discount> discounts;
+    private final float price;
 
-    public BestDiscount(final List<Discount> discounts) {
+    public BestPrice(final Set<Discount> discounts, final float price) {
         this.discounts = discounts;
-        this.totalDiscount = discounts.stream().mapToDouble(Discount::getDiscount).sum();
+        this.price = price;
     }
 
-    public List<Discount> getDiscounts() {
+    public Set<Discount> getDiscounts() {
         return discounts;
     }
 
-    public double getTotalDiscount() {
-        return totalDiscount;
+    public double getPrice() {
+        return price;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) { return true; }
         if (o == null || getClass() != o.getClass()) { return false; }
-        BestDiscount that = (BestDiscount)o;
+        BestPrice that = (BestPrice)o;
         return getDiscounts().equals(that.getDiscounts());
     }
 
@@ -40,7 +40,7 @@ public final class BestDiscount {
     public String toString() {
         return "BestDiscount{" +
                "discounts=" + discounts +
-               ", totalDiscount=" + totalDiscount +
+               ", price=" + price +
                '}';
     }
 }

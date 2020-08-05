@@ -12,17 +12,17 @@ public class DiscountCalculator {
     private final Set<Discount> discounts;
 
     // calculation state
-    private BestDiscount bestDiscount;
+    private BestPrice bestPrice;
 
     public DiscountCalculator(final Set<Discount> allDiscounts) {
         this.discounts = Collections.unmodifiableSet(allDiscounts);
     }
 
-    public BestDiscount calculateBestDiscount(final Map<String, Integer> books) {
+    public BestPrice calculateBestDiscount(final Map<String, Integer> books) {
 
         // Build stateful calculation context
         // In a parallel alternative, this could be stateless and apply/revert discounts
-        // could generata an immutable copy of the context
+        // could generate an immutable copy of the context
         final CalculationContext calculationContext = new CalculationContext(books);
 
         // Some heuristic to choose the discount that will lead faster
@@ -38,11 +38,12 @@ public class DiscountCalculator {
             }
         }
 
-        return this.bestDiscount;
+        return this.bestPrice;
     }
 
     private Discount chooseBestInitialDiscount() {
-        // Just to get going
+        // Choose the one that requires the less number of books
+        // since it's the one that hast most chances of being applicable
         return discounts.iterator().next();
     }
 
@@ -50,10 +51,10 @@ public class DiscountCalculator {
 
         context.applyDiscount(nextDiscount);
 
-        if (bestDiscount == null) {
-            bestDiscount = context.createBestDiscount();
-        } else if (context.getTotalDiscount() > bestDiscount.getTotalDiscount()) {
-            bestDiscount = context.createBestDiscount();
+        if (bestPrice == null) {
+            bestPrice = context.createBestPrice();
+        } else if (context.getPrice() < bestPrice.getPrice()) {
+            bestPrice = context.createBestPrice();
         }
 
         if (context.isAnyDiscountPossible()) {

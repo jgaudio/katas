@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 public class CalculationContext {
 
+    private static final int UNIT_BASE_PRICE = 8;
     // Table over which to apply discounts
     private final int[] books;
     // How many different volumes are there?
@@ -18,12 +19,13 @@ public class CalculationContext {
     private int totalBooksCount;
     // Discounts applied so far
     private final Stack<Discount> discountsChain;
-    // accumulated discount
-    private double totalDiscount;
 
     // At any point the calculation can skip any path
     // if it contains any of this discounts
     private final Set<Discount> visited;
+
+    // Resulting price after having applied discounts
+    private float price;
 
     public CalculationContext(final Map<String, Integer> books) {
         this.books = buildBooksTable(books);
@@ -75,7 +77,7 @@ public class CalculationContext {
             }
         }
         this.discountsChain.push(discount);
-        this.totalDiscount += discount.getDiscount();
+        updatePrice();
     }
 
     public void revertDiscount(final Discount discount) {
@@ -90,8 +92,8 @@ public class CalculationContext {
             }
             this.books[i] += 1;
         }
-        final Discount reverted = this.discountsChain.pop();
-        this.totalDiscount -= reverted.getDiscount();
+        this.discountsChain.pop();
+        updatePrice();
     }
 
     public boolean isDiscountApplicable(final Discount discount) {
@@ -106,16 +108,29 @@ public class CalculationContext {
         }
     }
 
-    public BestDiscount createBestDiscount() {
-        return new BestDiscount(this.discountsChain.stream().collect(Collectors.toList()));
+    public BestPrice createBestPrice() {
+        return new BestPrice(this.discountsChain.stream().collect(Collectors.toSet()), this.price);
     }
 
     public boolean isAnyDiscountPossible() {
         return this.differentBooksCount >= 2;
     }
 
-    public double getTotalDiscount() {
-        return this.totalDiscount;
+    public float getPrice() {
+        return this.price;
+    }
+
+    private void updatePrice() {
+        float newPrice = 0;
+        for (int i = 0; i < this.books.length; i++) {
+            if (this.books[i] > 0) {
+                newPrice += 8 * this.books[i];
+            }
+        }
+        for (final Discount discount : this.discountsChain) {
+            newPrice += discount.getDiscountedPrice();
+        }
+        this.price = newPrice;
     }
 
     public void markVisited(final Discount discount) {

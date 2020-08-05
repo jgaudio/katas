@@ -6,16 +6,17 @@ import java.util.Objects;
 
 public class Discount implements Comparable<Discount> {
 
-    private final float discount;
+    private static final int BASE_UNIT_PRICE = 8;
+    private final float priceAdjustment;
     private final int requiredDifferentBooks;
 
-    public Discount(float discount, int requiredDifferentBooks) {
-        this.discount = discount;
+    public Discount(float priceAdjustment, int requiredDifferentBooks) {
+        this.priceAdjustment = priceAdjustment;
         this.requiredDifferentBooks = requiredDifferentBooks;
     }
 
-    public float getDiscount() {
-        return discount;
+    public float getDiscountedPrice() {
+        return requiredDifferentBooks * BASE_UNIT_PRICE * priceAdjustment;
     }
 
     public int getRequiredDifferentBooks() {
@@ -41,6 +42,6 @@ public class Discount implements Comparable<Discount> {
     }
 
     public String toString() {
-        return this.requiredDifferentBooks + "x -> " + discount + "%";
+        return this.requiredDifferentBooks + "x -> " + (100 * (1 - priceAdjustment)) + "%";
     }
 }
