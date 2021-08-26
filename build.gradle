@@ -10,12 +10,18 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
-    implementation 'com.google.guava:guava:29.0-jre'
+    implementation "com.google.guava:guava:${version_guava}"
+    implementation "org.apache.commons:commons-lang3:${version_apache_commons}"
     testCompile(group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: version_junit)
     testCompile(group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: version_junit)
     testCompile(group: 'org.hamcrest', name: 'hamcrest', version: version_hamcrest)
 }
 
+test {
+    useJUnitPlatform()
+}
+
 wrapper {
     gradleVersion = gradleWrapperVersion
 }
+
