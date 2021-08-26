@@ -2,6 +2,10 @@ package jgaudio.katas.checkout;
 
 import java.util.Objects;
 
+/**
+ * For every {@link #groupSize} items you buy, you get {@link #discountUnits}
+ * for free.
+ */
 public class GroupDiscount implements Discount {
 
   private final Item item;
