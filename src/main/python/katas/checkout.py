@@ -3,14 +3,13 @@ from unittest import TestCase
 
 
 class Product(Enum):
-    BANANA = 0.5
-    WATERMELON = 1.5
+    A = 50
+    B = 30
+    C = 20
+    D = 15
 
     def __init__(self, unit_price):
-        self._unit_price = unit_price
-
-    def get_unit_price(self):
-        return self._unit_price
+        self.unit_price = unit_price
 
 
 class Discount:
@@ -20,29 +19,29 @@ class Discount:
 
 class GroupDiscount(Discount):
     def __init__(self, product, group_size, free_units):
-        self._product = product
-        self._group_size = group_size
-        self._free_units = free_units
+        self.product = product
+        self.group_size = group_size
+        self.free_units = free_units
 
     def calculate(self, products):
-        apply_count = len(list(filter(lambda p: p == self._product, products))) / self._group_size
-        return apply_count * self._product.get_unit_price() * self._free_units
+        apply_count = len(list(filter(lambda p: p == self.product, products))) / self.group_size
+        return apply_count * self.product.unit_price * self.free_units
 
 
 class MinUnitsGlobalDiscount(Discount):
     def __init__(self, product, min_units, discount_percentage):
-        self._product = product
-        self._min_units = min_units
-        self._discount_percentage = discount_percentage
+        self.product = product
+        self.min_units = min_units
+        self.discount_percentage = discount_percentage
 
     def calculate(self, products):
-        product_count = len(list(filter(lambda p: p == self._product, products)))
-        if product_count >= self._min_units:
-            return sum(map(lambda p: p.get_unit_price(), products)) * self._discount_percentage
+        product_count = len(list(filter(lambda p: p == self.product, products)))
+        if product_count >= self.min_units:
+            return sum(map(lambda p: p.unit_price, products)) * self.discount_percentage
 
 
 def checkout(products, discounts=None):
-    price = sum(map(lambda p: p.get_unit_price(), products))
+    price = sum(map(lambda p: p.unit_price, products))
     if discounts:
         price -= sum(map(lambda d: d.calculate(products), discounts))
     return price
@@ -51,15 +50,15 @@ def checkout(products, discounts=None):
 class TestCheckout(TestCase):
 
     def test_checkout_no_discounts(self):
-        self.assertEqual(2.5, checkout(
-            [Product.BANANA, Product.BANANA, Product.WATERMELON]))
+        self.assertEqual(130, checkout(
+            [Product.A, Product.A, Product.B]))
 
     def test_2for1_discount(self):
-        self.assertEqual(2, checkout(
-            [Product.BANANA, Product.BANANA, Product.WATERMELON],
-            [GroupDiscount(Product.BANANA, 2, 1)]))
+        self.assertEqual(80, checkout(
+            [Product.A, Product.A, Product.B],
+            [GroupDiscount(Product.A, 2, 1)]))
 
     def test_at_least_3_20_percent_discount(self):
-        self.assertEqual(2.4, checkout(
-            [Product.BANANA, Product.BANANA, Product.BANANA, Product.WATERMELON],
-            [MinUnitsGlobalDiscount(Product.BANANA, 3, 0.2)]))
+        self.assertEqual(144, checkout(
+            [Product.A, Product.A, Product.A, Product.B],
+            [MinUnitsGlobalDiscount(Product.A, 3, 0.2)]))
