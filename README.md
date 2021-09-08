@@ -1,5 +1,5 @@
 # katas
-My personal selection of coding katas & technical challenge solutions for fun, practice and job interviews.
+Solutions to my personal selection of coding katas & technical challenges done for fun, practice and to share in job interviews.
 
 ## Potter Kata
 
