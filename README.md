@@ -13,6 +13,18 @@ My personal collection of coding katas & technical challenge solutions for fun, 
 
 [Full kata description](https://codingdojo.org/kata/Potter)
 
+Solved in **Java**.
+
+## Checkout
+
+>This week, let’s implement the code for a supermarket checkout that calculates the total price of a number of items. In a normal supermarket, things are identified >using Stock Keeping Units, or SKUs. In our store, we’ll use individual letters of the alphabet (A, B, C, and so on). Our goods are priced individually. In >addition, some items are multipriced: buy n of them, and they’ll cost you y cents. For example, item ‘A’ might cost 50 cents individually, but this week we have a >special offer: buy three ‘A’s and they’ll cost you $1.30.
+>[...]
+>Our checkout accepts items in any order, so that if we scan a B, an A, and another B, we’ll recognize the two B’s and price them at 45 (for a total price so far of >95). Because the pricing changes frequently, we need to be able to pass in a set of pricing rules each time we start handling a checkout transaction.
+
+[Full kata description](http://codekata.com/kata/kata09-back-to-the-checkout/)
+
+Solved in **Java** and **Python**.
+
 ## Mars Rover
 
 >A squad of robotic rovers are to be landed by NASA on a plateau on Mars.
@@ -30,4 +42,6 @@ My personal collection of coding katas & technical challenge solutions for fun, 
 >The output for each rover should be its final co-ordinates and heading.
 
 [Full challenge description](https://code.google.com/archive/p/marsrovertechchallenge/)
+
+Solved in **Java**.
 
