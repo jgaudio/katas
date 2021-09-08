@@ -1,5 +1,6 @@
 from enum import Enum
 from unittest import TestCase
+from math import floor
 
 
 class Product(Enum):
@@ -25,7 +26,7 @@ class GroupSpecialPrice(SpecialPrice):
 
     def apply(self, shopping_cart):
         filtered_products = list(filter(lambda p: p == self.product, shopping_cart.products))
-        apply_count = len(filtered_products) / self.group_size
+        apply_count = floor(len(filtered_products) / self.group_size)
         shopping_cart.price += apply_count * self.price
         for i in range(self.group_size * int(apply_count)):
             shopping_cart.to_process.remove(self.product)
@@ -62,8 +63,8 @@ class MinUnitsGlobalDiscount(Discount):
 
 class ShoppingCart:
     def __init__(self, products):
-        self.products = products
-        self.to_process = products
+        self.products = [Product[p] for p in products]
+        self.to_process = self.products.copy()
         self.price = 0
 
 
@@ -80,20 +81,38 @@ def checkout(shopping_cart, special_prices=None, discounts=None):
 class TestCheckout(TestCase):
 
     def test_checkout_no_discounts(self):
-        self.assertEqual(130, checkout(
-            ShoppingCart([Product.A, Product.A, Product.B])))
+        self.assertEqual(130, checkout(ShoppingCart("AAB")))
 
     def test_2for1_discount(self):
         self.assertEqual(80, checkout(
-            ShoppingCart([Product.A, Product.A, Product.B]),
+            ShoppingCart("AAB"),
             discounts = [GroupDiscount(Product.A, 2, 1)]))
 
     def test_at_least_3_20_percent_discount(self):
         self.assertEqual(144, checkout(
-            ShoppingCart([Product.A, Product.A, Product.A, Product.B]),
+            ShoppingCart("AAAB"),
             discounts = [MinUnitsGlobalDiscount(Product.A, 3, 0.2)]))
 
     def test_special_price_group_of_three(self):
         self.assertEqual(160, checkout(
-            ShoppingCart([Product.A, Product.A, Product.A, Product.B]),
+            ShoppingCart("AAAB"),
             special_prices = [GroupSpecialPrice(Product.A, 3, 130)]))
+
+    def test_cases_from_kata_definition(self):
+        sp = [GroupSpecialPrice(Product.A, 3, 130),
+              GroupSpecialPrice(Product.B, 2, 45)]
+        self.assertEqual(  0, checkout(ShoppingCart(""), special_prices=sp))
+        self.assertEqual( 50, checkout(ShoppingCart("A"), special_prices=sp))
+        self.assertEqual( 80, checkout(ShoppingCart("AB"), special_prices=sp))
+        self.assertEqual(115, checkout(ShoppingCart("CDBA"), special_prices=sp))
+
+        self.assertEqual(100, checkout(ShoppingCart("AA"), special_prices=sp))
+        self.assertEqual(130, checkout(ShoppingCart("AAA"), special_prices=sp))
+        self.assertEqual(180, checkout(ShoppingCart("AAAA"), special_prices=sp))
+        self.assertEqual(230, checkout(ShoppingCart("AAAAA"), special_prices=sp))
+        self.assertEqual(260, checkout(ShoppingCart("AAAAAA"), special_prices=sp))
+
+        self.assertEqual(160, checkout(ShoppingCart("AAAB"), special_prices=sp))
+        self.assertEqual(175, checkout(ShoppingCart("AAABB"), special_prices=sp))
+        self.assertEqual(190, checkout(ShoppingCart("AAABBD"), special_prices=sp))
+        self.assertEqual(190, checkout(ShoppingCart("DABABA"), special_prices=sp))
