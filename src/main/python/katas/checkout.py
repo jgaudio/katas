@@ -13,11 +13,13 @@ class Product(Enum):
         self.unit_price = unit_price
 
 
+# Interface for a special rule for pricing (other than unitary price)
 class SpecialPrice:
     def apply(self, shopping_cart):
         pass
 
 
+# Pricing rule that sets a price for a group or products of certain size
 class GroupSpecialPrice(SpecialPrice):
     def __init__(self, product, group_size, price):
         self.product = product
@@ -33,11 +35,15 @@ class GroupSpecialPrice(SpecialPrice):
         return shopping_cart
 
 
+# Interface for a discount
+# Not part of the original kata, but interesting to do anyway
 class Discount:
     def calculate(self, products):
         pass
 
 
+# Discount that works by setting a number of units of a product free of charge
+# when you buy a group of them of some size (the classic '2 for 1')
 class GroupDiscount(Discount):
     def __init__(self, product, group_size, free_units):
         self.product = product
@@ -49,6 +55,7 @@ class GroupDiscount(Discount):
         return apply_count * self.product.unit_price * self.free_units
 
 
+# Discount that is applied to the whole buy when you buy a minimum of X units of some product
 class MinUnitsGlobalDiscount(Discount):
     def __init__(self, product, min_units, discount_percentage):
         self.product = product
@@ -60,7 +67,10 @@ class MinUnitsGlobalDiscount(Discount):
         if product_count >= self.min_units:
             return sum(map(lambda p: p.unit_price, products)) * self.discount_percentage
 
-
+# Shopping cart that contains the buy. While the cart holds at all times an immutable list of all the bought items,
+# when passed along to the checkout() function,
+# it will also hold an additional copy with the items still to be processed that the pricing rules can mutate,
+# and also the incrementally calculated price.
 class ShoppingCart:
     def __init__(self, products):
         self.products = [Product[p] for p in products]
@@ -68,6 +78,11 @@ class ShoppingCart:
         self.price = 0
 
 
+# Calculates the total price following these steps:
+# 1) It iterates over the special prices (if any) and starts adding up to the total price. This step can mutate the copy of the items that shopping cart holds for processing.
+# 2) The items that are left to be processed are priced according to their unitary prices.
+# 3) Discounts are applied to the items to which no special price has been applied.
+# The last step is not part of the original kata. The decision to apply discounts to the surviving items is arbitrary.
 def checkout(shopping_cart, special_prices=None, discounts=None):
     if special_prices:
         for special_price in special_prices:
